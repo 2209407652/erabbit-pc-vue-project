@@ -12,6 +12,9 @@ import XtxBreadItemVue from './xtx-bread-item.vue'
 import XtxCheckboxVue from './xtx-checkbox.vue';
 import XtxInfiniteLoadingVue from './xtx-infinite-loading.vue';
 import XtxCityVue from './xtx-city.vue';
+import XtxNumboxVue from './xtx-numbox.vue';
+import XtxButtonVue from './xtx-button.vue'
+import XtxPaginationVue from './xtx-pagination.vue';
 
 import defaultImg from '@/assets/images/200.png'
 
@@ -51,6 +54,9 @@ export default {
         app.component('XtxCheckbox', XtxCheckboxVue)
         app.component('XtxInfiniteLoading', XtxInfiniteLoadingVue)
         app.component('XtxCity', XtxCityVue)
+        app.component('XtxNumbox', XtxNumboxVue)
+        app.component('XtxButton', XtxButtonVue)
+        app.component('XtxPagination', XtxPaginationVue)
         defineDirective(app)
     }
 }

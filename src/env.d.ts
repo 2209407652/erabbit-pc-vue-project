@@ -22,6 +22,7 @@ export interface Window {
  * 商品详情
  */
 export interface GoodDetails {
+  inventory: any
   categories: any[];
   name: string;
   mainPictures: string[];
@@ -31,4 +32,14 @@ export interface GoodDetails {
   userAddresses: any[] | null;
   specs: any[];
   skus: any[];
+  spuCode: string
+  id: string
+  commentCount: number
+  details: {
+    pictures: string[]
+    properties: {
+      name: string
+      value: string
+    }[]
+  }
 }

@@ -1,13 +1,90 @@
 <script setup lang="ts">
 import getPowerSet from "@/vender/power-set";
 
-// props
+// props、emit
 const props = defineProps<{
   goods: {
     specs: any[];
     skus: any[];
   };
+  skuId: string;
 }>();
+const emit = defineEmits<{
+  (
+    e: "change",
+    sku: {
+      skuId?: string;
+      price?: string;
+      oldPrice?: string;
+      inventory?: number;
+      specsText?: any;
+    }
+  ): void;
+}>();
+
+/**
+ * 初始化选中状态
+ * @param goods
+ * @param skuId
+ */
+function initSelectedStatus(
+  goods: {
+    skus: any[];
+    specs: {
+      values: {
+        selected: boolean; // props
+        name: any;
+      }[];
+    }[];
+  },
+  skuId: any
+) {
+  const sku = goods.skus.find((sku: { id: any }) => sku.id === skuId);
+  if (sku) {
+    goods.specs.forEach(
+      (spec: { values: { selected: boolean; name: any }[] }, i: string | number) => {
+        const value = sku.specs[i].valueName;
+        spec.values.forEach((val: { selected: boolean; name: any }) => {
+          val.selected = val.name === value;
+        });
+      }
+    );
+  }
+}
+
+/**
+ * 禁用效果，设置状态
+ * @param specs
+ */
+function getSelectedArr(specs: any[]) {
+  const selectedArr: any[] = [];
+  specs.forEach((spec) => {
+    const selectedVal = spec.values.find((val: { selected: any }) => val.selected);
+    selectedArr.push(selectedVal ? selectedVal.name : undefined);
+  });
+  return selectedArr;
+}
+
+/**
+ * 更新按钮的禁用状态
+ * @param specs
+ * @param pathMap
+ */
+function updateDisabledStatus(specs: any[], pathMap: { [x: string]: any }) {
+  specs.forEach((spec, i) => {
+    const selectedArr = getSelectedArr(specs);
+    spec.values.forEach((val: { name: any; disabled: boolean }) => {
+      // 已经选中的按钮不用判断
+      if (val.name === selectedArr[i]) return false;
+      // 未选中的替换对应的值
+      selectedArr[i] = val.name;
+      // 过滤无效值得到key
+      const key = selectedArr.filter((v) => v).join(spliter);
+      // 设置禁用状态
+      val.disabled = !pathMap[key];
+    });
+  });
+}
 
 /**
  *根据skus数据得到路径字典对象
@@ -39,7 +116,13 @@ function getPathMap(skus: any[]) {
   });
   return pathMap;
 }
+
+/**
+ *  根据传入的skuId默认选中规格按钮 -- 组件初始化的时候更新禁用状态
+ */
 const pathMap = getPathMap(props.goods.skus);
+initSelectedStatus(props.goods, props.skuId);
+updateDisabledStatus(props.goods.specs, pathMap);
 
 /**
  * 选中与取消选中
@@ -54,6 +137,29 @@ function clickSpecs(item: { values: any[] }, val: { selected: boolean }) {
       bv.selected = false;
     });
     val.selected = true;
+  }
+  // 点击的时候更新禁用状态
+  updateDisabledStatus(props.goods.specs, pathMap);
+  // 触发change事件将sku数据传递出去
+  const selectedArr = getSelectedArr(props.goods.specs).filter((v) => v);
+  if (selectedArr.length === props.goods.specs.length) {
+    const skuIds = (<any>pathMap)[selectedArr.join(spliter)];
+    const sku = props.goods.skus.find((sku) => sku.id === skuIds[0]);
+    // 传递
+    emit("change", {
+      skuId: sku.id,
+      price: sku.price,
+      oldPrice: sku.oldPrice,
+      inventory: sku.inventory,
+      specsText: sku.specs
+        .reduce(
+          (p: any, n: { name: any; valueName: any }) => `${p} ${n.name}：${n.valueName}`,
+          ""
+        )
+        .replace(" ", ""),
+    });
+  } else {
+    emit("change", {});
   }
 }
 </script>

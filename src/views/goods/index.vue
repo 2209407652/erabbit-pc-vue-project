@@ -4,9 +4,13 @@ import GoodsImageVue from "./components/goods-image.vue";
 import GoodsSalesVue from "./components/goods-sales.vue";
 import GoodsNameVue from "./components/goods-name.vue";
 import GoodsSkuVue from "./components/goods-sku.vue";
-import { nextTick, ref, watch } from "vue";
+import GoodsTabsVue from "./components/goods-tabs.vue";
+import GoodsHotVue from "./components/goods-hot.vue";
+import GoodsWarnVue from "./components/goods-warn.vue";
+import { nextTick, provide, ref, watch } from "vue";
 import { findGoods } from "@/api/product";
 import { useRoute } from "vue-router";
+import { GoodDetails } from "@/env";
 
 /**
  * 获取商品详情
@@ -41,7 +45,31 @@ function useGoods() {
   return goods;
 }
 const goods = useGoods();
-console.log(goods);
+// console.log(goods);
+
+/**
+ * sku改变触发
+ */
+function changeSku(sku: any) {
+  if (sku.skuId) {
+    goods.value!.price = sku.price;
+    goods.value!.oldPrice = sku.oldPrice;
+    goods.value!.inventory = sku.inventory;
+  }
+}
+
+/**
+ * 数量
+ */
+const num = ref(1);
+function changeNum(newNum: number) {
+  num.value = newNum;
+}
+
+/**
+ * 注入依赖
+ */
+provide("goods", goods);
 </script>
 
 <template>
@@ -66,21 +94,36 @@ console.log(goods);
         </div>
         <div class="spec">
           <GoodsNameVue :goods="goods" />
-          <GoodsSkuVue :goods="goods" />
+          <GoodsSkuVue :goods="goods" :sku-id="goods.spuCode" @change="changeSku" />
+          <XtxNumbox
+            label="数量"
+            v-model="num"
+            :max="goods.inventory"
+            @change="changeNum"
+          />
+          <XtxButton
+            type="primary"
+            size="middle"
+            style="margin-top: 20px; margin-left: 10px"
+            >加入购物车</XtxButton
+          >
         </div>
       </div>
       <!-- 商品推荐 -->
-      <GoodsRelevantVue />
+      <GoodsRelevantVue :goodsId="goods.id" />
       <!-- 商品详情 -->
       <div class="goods-footer">
         <div class="goods-article">
           <!-- 商品+评价 -->
-          <div class="goods-tabs"></div>
+          <GoodsTabsVue />
           <!-- 注意事项 -->
-          <div class="goods-warn"></div>
+          <GoodsWarnVue />
         </div>
         <!-- 24热榜+专题推荐 -->
-        <div class="goods-aside"></div>
+        <div class="goods-aside">
+          <GoodsHotVue :type="1" :goods-id="goods.id" />
+          <GoodsHotVue :type="2" :goods-id="goods.id" />
+        </div>
       </div>
     </div>
   </div>
