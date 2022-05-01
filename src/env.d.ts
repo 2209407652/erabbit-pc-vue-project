@@ -22,7 +22,9 @@ export interface Window {
  * 商品详情
  */
 export interface GoodDetails {
-  inventory: any
+  [proptypeName: string]: any
+  selected?: boolean
+  inventory: number
   categories: any[];
   name: string;
   mainPictures: string[];
@@ -42,4 +44,5 @@ export interface GoodDetails {
       value: string
     }[]
   }
+  collectCount: number
 }

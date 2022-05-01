@@ -752,5 +752,13 @@ watch(
 </style>
 ```
 
+## getCurrentInstance
 
-## a
+通过 getCurrentInstance 方法获取当前组件实例，从而获取 route 和 router
+
+```ts
+import { getCurrentInstance } from "vue";
+const { proxy } = getCurrentInstance();
+console.log(proxy.$root.$route);
+console.log(proxy.$root.$router);
+```

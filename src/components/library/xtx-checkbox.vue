@@ -10,9 +10,10 @@ const emit = defineEmits<{
 /**
  * 复选框功能
  */
-const checked = ref(false);
+const checked = ref<boolean>(false);
 function changeChecked() {
   checked.value = !checked.value;
+
   // 通知父组件更新数据
   emit("update", checked.value);
 }
@@ -20,7 +21,7 @@ function changeChecked() {
 watch(
   () => props.modelValue,
   () => {
-    checked.value = props.modelValue;
+    checked.value = props.modelValue || false;
   },
   {
     immediate: true,
@@ -29,7 +30,7 @@ watch(
 </script>
 
 <template>
-  <div class="xtx-checkbox" @click="changeChecked()">
+  <div class="xtx-checkbox" @click="changeChecked">
     <i v-if="checked" class="iconfont icon-checked"></i>
     <i v-else class="iconfont icon-unchecked"></i>
     <span v-if="$slots.default"><slot /></span>

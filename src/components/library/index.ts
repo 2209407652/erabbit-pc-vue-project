@@ -15,6 +15,7 @@ import XtxCityVue from './xtx-city.vue';
 import XtxNumboxVue from './xtx-numbox.vue';
 import XtxButtonVue from './xtx-button.vue'
 import XtxPaginationVue from './xtx-pagination.vue';
+import XtxDialogVue from './xtx-dialog.vue';
 
 import defaultImg from '@/assets/images/200.png'
 
@@ -57,6 +58,7 @@ export default {
         app.component('XtxNumbox', XtxNumboxVue)
         app.component('XtxButton', XtxButtonVue)
         app.component('XtxPagination', XtxPaginationVue)
+        app.component('XtxDialog', XtxDialogVue)
         defineDirective(app)
     }
 }

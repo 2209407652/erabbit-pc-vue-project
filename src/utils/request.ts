@@ -39,7 +39,14 @@ instance.interceptors.response.use(res => res.data, err => {
         // 1.清空无效信息
         // 2.跳转登陆页面
         // 3.跳转传参
-        userStore.setUser({})
+        userStore.setUser({
+            id: '',
+            avatar: '',
+            nickname: '',
+            account: '',
+            mobile: '',
+            token: ''
+        })
         // router.currentRoute 是 ref 响应式数据
         const fullPath = encodeURIComponent(router.currentRoute.value.fullPath)
         // encodeURLComponent 转换 url 编码

@@ -142,10 +142,12 @@ function clickSpecs(item: { values: any[] }, val: { selected: boolean }) {
   updateDisabledStatus(props.goods.specs, pathMap);
   // 触发change事件将sku数据传递出去
   const selectedArr = getSelectedArr(props.goods.specs).filter((v) => v);
+
   if (selectedArr.length === props.goods.specs.length) {
     const skuIds = (<any>pathMap)[selectedArr.join(spliter)];
     const sku = props.goods.skus.find((sku) => sku.id === skuIds[0]);
     // 传递
+
     emit("change", {
       skuId: sku.id,
       price: sku.price,

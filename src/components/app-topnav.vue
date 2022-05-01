@@ -1,10 +1,31 @@
 <script setup lang="ts">
-import { useUserStore } from "@/store";
+import { useUserStore, useCartStore } from "@/store";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const userStore = useUserStore();
+const cartStore = useCartStore();
 
 // 根据当前的登陆状态显示用户名和退出登陆
 const { profile } = userStore;
+
+/**
+ * 退出登陆
+ */
+const initData = {
+  id: "",
+  avatar: "",
+  nickname: "",
+  account: "",
+  mobile: "",
+  token: "",
+};
+function logout() {
+  userStore.setUser(initData);
+  // 清空购物车
+  cartStore.setCartList([]);
+  router.push("/login");
+}
 </script>
 
 <template>
@@ -17,10 +38,10 @@ const { profile } = userStore;
               ><i class="iconfont icon-user"></i>{{ profile.account }}</a
             >
           </li>
-          <li><a href="javascript:;">退出登录</a></li>
+          <li><a href="javascript:;" @click="logout">退出登录</a></li>
         </template>
         <template v-else>
-          <li><a href="javascript:;">请先登录</a></li>
+          <li><RouterLink to="/login">请先登录</RouterLink></li>
           <li><a href="javascript:;">免费注册</a></li>
         </template>
         <li><a href="javascript:;">我的订单</a></li>

@@ -29,6 +29,7 @@ function changeNum(value: number) {
   const newValue = props.modelValue + value;
   if (newValue < props.min) return;
   if (newValue > props.max) return;
+
   emit("change", newValue);
 }
 </script>
